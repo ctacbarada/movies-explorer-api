@@ -38,7 +38,7 @@ app.use('/signin', celebrate({
 }), signin);
 
 app.use('/', require('./routes/users'));
-// app.use('/', require('./routes/movies'));
+app.use('/', require('./routes/movies'));
 
 app.use(errorLogger); // подключаем логгер ошибок
 // errorLogger нужно подключить после

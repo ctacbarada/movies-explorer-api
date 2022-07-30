@@ -50,11 +50,9 @@ module.exports.signin = (req, res, next) => {
 };
 
 module.exports.getAboutUser = (req, res, next) => {
-  User.findById(req.user._id)
+  User.find({})
     .then((user) => res.send(user))
-    .catch((err) => {
-      next(err);
-    });
+    .catch((err) => next(err));
 };
 
 module.exports.patchUpdateUser = (req, res, next) => {
