@@ -4,9 +4,9 @@ const { REG_LINK } = require('../const/const');
 
 const { getAllMovies, createMovie, deleteMovie } = require('../controllers/movie');
 
-router.get = ('/movies', getAllMovies);
+router.get('/movies', getAllMovies);
 
-router.post = ('/movies', celebrate({
+router.post('/movies', celebrate({
   body: Joi.object().keys({
     country: Joi.string().required().min(2).max(30),
     director: Joi.string().required().min(2).max(30),
@@ -22,7 +22,7 @@ router.post = ('/movies', celebrate({
   }),
 }), createMovie);
 
-router.get = ('/movies/:movieId', celebrate({
+router.delete('/movies/:movieId', celebrate({
   // валидируем параметры
   params: Joi.object().keys({
     movieId: Joi.string().alphanum().required().length(24),

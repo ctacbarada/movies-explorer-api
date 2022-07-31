@@ -8,19 +8,17 @@ const { ValidationError } = require('../errors/ValidationError');
 
 module.exports.signup = (req, res, next) => {
   const {
-    name, about, avatar, email, password,
+    name, email, password,
   } = req.body;
 
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
-      name, about, avatar, email, password: hash,
+      name, email, password: hash,
     })
       .then((user) => {
         const data = {
           _id: user._id,
           name: user.name,
-          about: user.about,
-          avatar: user.avatar,
           email: user.email,
         };
         res.status(201).send(data);
@@ -50,24 +48,26 @@ module.exports.signin = (req, res, next) => {
 };
 
 module.exports.getAboutUser = (req, res, next) => {
-  User.find({})
-    .then((user) => res.send(user))
+  User.findById(req.user._id)
+    .then((user) => {
+      res.send({ name: user.name, email: user.email });
+    })
     .catch((err) => next(err));
 };
 
 module.exports.patchUpdateUser = (req, res, next) => {
-  const { name, about } = req.body;
+  const { name, email } = req.body;
 
   User.findByIdAndUpdate(
     req.user._id,
-    { name, about },
+    { name, email },
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
     },
   )
     .then((user) => {
-      res.send(user);
+      res.send({ name: user.name, email: user.email });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {

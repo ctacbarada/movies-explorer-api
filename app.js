@@ -9,6 +9,7 @@ const cors = require('./middlewares/cors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { signup, signin } = require('./controllers/users');
 const { PageNotFoundError } = require('./errors/PageNotFoundError');
+const { isAuthorized } = require('./middlewares/auth');
 
 const app = server();
 const { PORT = 3000 } = process.env;
@@ -24,6 +25,7 @@ app.use(cors); // подключаем cors заголовки
 
 app.use('/signup', celebrate({
   body: Joi.object().keys({
+    name: Joi.string().required().min(2).max(30),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),
@@ -31,11 +33,12 @@ app.use('/signup', celebrate({
 
 app.use('/signin', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),
 }), signin);
+
+app.use(isAuthorized); // Защита авторизацией
 
 app.use('/', require('./routes/users'));
 app.use('/', require('./routes/movies'));

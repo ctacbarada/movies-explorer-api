@@ -27,7 +27,7 @@ const movieSchema = new mongoose.Schema({
     required: true,
     validate: (val) => REG_LINK.test(val),
   },
-  trailerLink: {
+  trailer: {
     type: String,
     required: true,
     validate: (val) => REG_LINK.test(val),

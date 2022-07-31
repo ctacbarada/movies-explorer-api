@@ -1,6 +1,7 @@
 const Movie = require('../models/movie');
-const { NoValidId } = require('../errors/NoValidId');
-const { NoPermission } = require('../errors/NoPermission');
+const { NoValidIdError } = require('../errors/NoValidIdError');
+const { NoPermissionError } = require('../errors/NoPermissionError');
+const { ValidationError } = require('../errors/ValidationError');
 
 module.exports.getAllMovies = (req, res, next) => {
   Movie.find({})
@@ -32,30 +33,29 @@ module.exports.createMovie = (req, res, next) => {
       res.status(201).send(movie);
     })
     .catch((err) => {
-      console.log(err);
+      if (err.name === 'ValidationError') {
+        next(new ValidationError('400 - Переданы некорректные данные при создании фильма'));
+      }
       next(err);
     });
 };
 
 module.exports.deleteMovie = (req, res, next) => {
   Movie.findById(req.params.movieId)
+    .orFail(new Error('NoValidId'))
     .then((movie) => {
-      const owner = movie.owner.toHexString();
-      if (!movie) {
-        next(new NoValidId('404 - Фильм с указанным _id не найдена'));
-      } else if (owner === req.user._id) {
+      if (movie.owner.toHexString() === req.user._id) {
         Movie.findByIdAndRemove(req.params.movieId)
-          .orFail(new Error('NoValidId'))
-          .then((movieDeleted) => res.send(movieDeleted))
-          .catch((err) => {
-            if (err.message === 'NoValidId') {
-              next(new NoValidId('404 - Фильм с указанным _id не найдена'));
-            } else {
-              next(err);
-            }
-          });
+          .then((movieDeleted) => res.send(movieDeleted));
       } else {
-        next(new NoPermission('403 — попытка удалить чужую карточку;'));
+        next(new NoPermissionError('403 — попытка удалить чужой фильм;'));
+      }
+    })
+    .catch((err) => {
+      if (err.message === 'NoValidId') {
+        next(new NoValidIdError('404 - Фильм с указанным _id не найдена'));
+      } else {
+        next(err);
       }
     });
 };
