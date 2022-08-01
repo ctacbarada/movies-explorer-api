@@ -1,7 +1,6 @@
 // Массив доменов, с которых разрешены кросс-доменные запросы
 const allowedCors = [
-  // 'https://ctacleo.nomoredomains.xyz',
-  // 'http://ctacleo.nomoredomains.xyz',
+  'https://stan.nomoredomains.xyz/',
   'localhost:3000',
 ];
 
