@@ -10,9 +10,9 @@ const route = require('./routes/index');
 const errorHendler = require('./middlewares/errorHandler');
 const rateLimit = require('./middlewares/rateLimit');
 
-const { PORT, MONGO } = process.env;
+const { PORT, MONGOPROD, NODE_ENV } = process.env;
 const app = server();
-mongoose.connect(MONGO);
+mongoose.connect(NODE_ENV === 'production' ? MONGOPROD : 'mongodb://localhost:27017/moviesdb');
 
 app.use(helmet()); // использование Helmet
 app.disable('x-powered-by'); // отключить заголовок X-Powered-By
