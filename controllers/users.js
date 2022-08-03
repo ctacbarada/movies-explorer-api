@@ -1,10 +1,34 @@
-const { NODE_ENV, JWT_SECRET } = process.env;
-
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const { ConflictError } = require('../errors/ConflictError');
 const { ValidationError } = require('../errors/ValidationError');
+const { JWT_SECRET_DEV } = require('../const/const');
+
+const { NODE_ENV, JWT_SECRET_PROD } = process.env;
+
+function findByIdAndUpdate(req, res, next) {
+  const { name, email } = req.body;
+
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name, email },
+    {
+      new: true, // обработчик then получит на вход обновлённую запись
+      runValidators: true, // данные будут валидированы перед изменением
+    },
+  )
+    .then((user1) => {
+      res.send({ name: user1.name, email: user1.email });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new ValidationError('400 —  Переданы некорректные данные при обновлении профиля'));
+      } else {
+        next(err);
+      }
+    });
+}
 
 module.exports.signup = (req, res, next) => {
   const {
@@ -39,7 +63,7 @@ module.exports.signin = (req, res, next) => {
 
   User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '24h' });
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET_PROD : JWT_SECRET_DEV, { expiresIn: '24h' });
       res.send({ token });
     })
     .catch((err) => {
@@ -56,18 +80,17 @@ module.exports.getAboutUser = (req, res, next) => {
 };
 
 module.exports.patchUpdateUser = (req, res, next) => {
-  const { name, email } = req.body;
+  const { email } = req.body;
 
-  User.findByIdAndUpdate(
-    req.user._id,
-    { name, email },
-    {
-      new: true, // обработчик then получит на вход обновлённую запись
-      runValidators: true, // данные будут валидированы перед изменением
-    },
-  )
+  User.findOne({ email })
     .then((user) => {
-      res.send({ name: user.name, email: user.email });
+      if (!user) {
+        findByIdAndUpdate(req, res, next);
+      } else if (user._id.toString() === req.user._id) {
+        findByIdAndUpdate(req, res, next);
+      } else {
+        next(new ConflictError('409 - Пользователь с такой почтой уже существует'));
+      }
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {

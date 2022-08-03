@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const isEmail = require('validator/lib/isEmail'); // import only a subset of the library
-const { TrowUnauthorizedError } = require('../errors/UnauthorizedError');
+const { UnauthorizedError } = require('../errors/UnauthorizedError');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -31,12 +31,12 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(email,
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new TrowUnauthorizedError('Неправильные почта или пароль'));
+        return Promise.reject(new UnauthorizedError('401 - Неправильные почта или пароль'));
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new TrowUnauthorizedError('Неправильные почта или пароль'));
+            return Promise.reject(new UnauthorizedError('401 - Неправильные почта или пароль'));
           }
           return user;
         });

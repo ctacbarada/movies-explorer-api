@@ -9,10 +9,12 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const route = require('./routes/index');
 const errorHendler = require('./middlewares/errorHandler');
 const rateLimit = require('./middlewares/rateLimit');
+const { MONGO_DEV, PORT_DEV } = require('./const/const');
 
-const { PORT, MONGOPROD, NODE_ENV } = process.env;
+const { PORT_PROD, MONGO_PROD, NODE_ENV } = process.env;
 const app = server();
-mongoose.connect(NODE_ENV === 'production' ? MONGOPROD : 'mongodb://localhost:27017/moviesdb');
+rateLimit(app); // Basic rate-limiting middleware for Express
+mongoose.connect(NODE_ENV === 'production' ? MONGO_PROD : MONGO_DEV);
 
 app.use(helmet()); // использование Helmet
 app.disable('x-powered-by'); // отключить заголовок X-Powered-By
@@ -22,12 +24,11 @@ app.use(requestLogger); // подключаем логгер запросов
 app.use(cors); // подключаем cors заголовки
 
 route(app); // Все роуты
-rateLimit(app); // Basic rate-limiting middleware for Express
 
 app.use(errorLogger); // errorLogger подключают после обработчиков роутов и до обработчиков ошибок
 app.use(errors()); // обработчик ошибок celebrate
 
 errorHendler(app); // здесь обрабатываем все ошибки
 
-app.listen(PORT, () => {
+app.listen(NODE_ENV === 'production' ? PORT_PROD : PORT_DEV, () => {
 });
