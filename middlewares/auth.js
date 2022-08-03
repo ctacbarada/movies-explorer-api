@@ -1,7 +1,8 @@
-const { NODE_ENV, JWT_SECRET } = process.env;
-
 const jwt = require('jsonwebtoken');
+const { JWT_SECRET_DEV } = require('../const/const');
 const { UnauthorizedError } = require('../errors/UnauthorizedError');
+
+const { NODE_ENV, JWT_SECRET_PROD } = process.env;
 
 let payload;
 
@@ -14,7 +15,7 @@ const isAuthorized = (req, res, next) => {
   const token = auth.replace('Bearer ', '');
 
   try {
-    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret');
+    payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET_PROD : JWT_SECRET_DEV);
   } catch (err) {
     throw new UnauthorizedError('Авторизуйтесь для доступа!');
   }
