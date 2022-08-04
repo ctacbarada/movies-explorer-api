@@ -1,1 +1,1 @@
-# movies-explorer-api
+https://api.stan.nomoredomains.xyz/
