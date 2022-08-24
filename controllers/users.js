@@ -53,6 +53,7 @@ module.exports.signup = (req, res, next) => {
         } else if (err.name === 'ValidationError') {
           next(new ValidationError('400 - Переданы некорректные данные при создании пользователя'));
         } else {
+          console.log(err);
           next(err);
         }
       }));
@@ -67,7 +68,6 @@ module.exports.signin = (req, res, next) => {
       res.send({ token });
     })
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };
