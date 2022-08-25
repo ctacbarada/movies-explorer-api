@@ -1,6 +1,7 @@
 // Массив доменов, с которых разрешены кросс-доменные запросы
 const allowedCors = [
-  'https://stan.nomoredomains.xyz/',
+  'https://stan.nomoredomains.xyz',
+  'http://stan.nomoredomains.xyz',
   'http://localhost:3000',
 ];
 
