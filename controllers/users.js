@@ -18,8 +18,8 @@ function findByIdAndUpdate(req, res, next) {
       runValidators: true, // данные будут валидированы перед изменением
     },
   )
-    .then((user1) => {
-      res.send({ name: user1.name, email: user1.email });
+    .then((user) => {
+      res.send({ name: user.name, email: user.email });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -53,7 +53,6 @@ module.exports.signup = (req, res, next) => {
         } else if (err.name === 'ValidationError') {
           next(new ValidationError('400 - Переданы некорректные данные при создании пользователя'));
         } else {
-          console.log(err);
           next(err);
         }
       }));

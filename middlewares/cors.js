@@ -2,7 +2,6 @@
 const allowedCors = [
   'https://stan.nomoredomains.xyz/',
   'http://localhost:3000',
-  'https://localhost:3000',
 ];
 
 module.exports = ((req, res, next) => {
