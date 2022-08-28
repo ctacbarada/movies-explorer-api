@@ -1,6 +1,7 @@
 const Movie = require('../models/movie');
 const { NoValidIdError } = require('../errors/NoValidIdError');
 const { NoPermissionError } = require('../errors/NoPermissionError');
+const { ConflictError } = require('../errors/ConflictError');
 const { ValidationError } = require('../errors/ValidationError');
 const { CastError } = require('../errors/CastError');
 
@@ -16,27 +17,39 @@ module.exports.createMovie = (req, res, next) => {
     image, trailerLink, nameRU, nameEN, thumbnail, movieId,
   } = req.body;
 
-  Movie.create({
-    country,
-    director,
-    duration,
-    year,
-    description,
-    image,
-    trailerLink,
-    nameRU,
-    nameEN,
-    thumbnail,
-    owner: req.user._id,
-    movieId,
-  })
-    .then((movie) => {
-      res.status(201).send(movie);
+  Movie.findOne({ movieId })
+    .then((item) => {
+      if (!item) {
+        Movie.create({
+          country,
+          director,
+          duration,
+          year,
+          description,
+          image,
+          trailerLink,
+          nameRU,
+          nameEN,
+          thumbnail,
+          owner: req.user._id,
+          movieId,
+        })
+          .then((movie) => {
+            res.status(201).send(movie);
+          })
+          .catch((err) => {
+            if (err.name === 'ValidationError') {
+              next(new ValidationError('400 - Переданы некорректные данные при создании фильма'));
+            }
+            next(err);
+          });
+        return;
+      }
+      if (item.movieId === movieId) {
+        next(new ConflictError('409 - Такой фильм уже существует'));
+      }
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        next(new ValidationError('400 - Переданы некорректные данные при создании фильма'));
-      }
       next(err);
     });
 };
@@ -46,10 +59,11 @@ module.exports.deleteMovie = (req, res, next) => {
     .orFail(new Error('NoValidId'))
     .then(async (movie) => {
       if (movie.owner.toHexString() === req.user._id) {
-        await Movie.remove();
+        await Movie.findByIdAndRemove(req.params.movieId);
         res.status(200).send({ message: 'Фильм удален' });
+      } else {
+        throw new NoPermissionError('403 — Попытка удалить чужой фильм');
       }
-      throw new NoPermissionError('403 — Попытка удалить чужой фильм');
     })
     .catch((err) => {
       if (err.message === 'NoValidId') {
