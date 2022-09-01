@@ -7,7 +7,9 @@ const { CastError } = require('../errors/CastError');
 
 module.exports.getAllMovies = (req, res, next) => {
   Movie.find({})
-    .then((movie) => res.send(movie))
+    .then((movie) => {
+      res.send(movie);
+    })
     .catch((err) => next(err));
 };
 
