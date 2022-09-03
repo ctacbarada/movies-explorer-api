@@ -28,7 +28,7 @@ module.exports.postMovies = celebrate({
     }),
     movieId: Joi.number().required(),
     nameRU: Joi.string().required(),
-    nameEN: Joi.string().required(),
+    nameEN: Joi.string(),
   }),
 });
 

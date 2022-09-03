@@ -74,7 +74,7 @@ module.exports.signin = (req, res, next) => {
 module.exports.getAboutUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
-      res.send({ name: user.name, email: user.email });
+      res.send({ name: user.name, email: user.email, user_id: user._id });
     })
     .catch((err) => next(err));
 };
