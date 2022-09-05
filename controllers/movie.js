@@ -45,9 +45,7 @@ module.exports.createMovie = (req, res, next) => {
             }
             next(err);
           });
-        return;
-      }
-      if (item.movieId === movieId) {
+      } else {
         next(new ConflictError('409 - Такой фильм уже существует'));
       }
     })
