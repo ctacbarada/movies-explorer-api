@@ -26,7 +26,7 @@ module.exports.postMovies = celebrate({
       }
       return helpers.message('Неправильная ссылка');
     }),
-    movieId: Joi.number().required(),
+    movieId: Joi.string().required(),
     nameRU: Joi.string().required(),
     nameEN: Joi.string(),
   }),

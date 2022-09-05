@@ -19,7 +19,7 @@ module.exports.createMovie = (req, res, next) => {
     image, trailerLink, nameRU, nameEN, thumbnail, movieId,
   } = req.body;
 
-  Movie.findOne({ movieId })
+  Movie.findOne({ movieId: `${movieId + req.user._id}` })
     .then((item) => {
       if (!item) {
         Movie.create({
@@ -34,7 +34,7 @@ module.exports.createMovie = (req, res, next) => {
           nameEN,
           thumbnail,
           owner: req.user._id,
-          movieId,
+          movieId: `${movieId + req.user._id}`,
         })
           .then((movie) => {
             res.status(201).send(movie);
