@@ -67,12 +67,17 @@ I used `Node.js` witch `Express Fraemwork` and `MongoDB` database to process and
 
 The project was build on the AWS cloud using `Nginx` and `PM2` to resume work in crash case.
 
-I used <b>React</b> framework and <b>MongoDB</b> data base.
+```JS
+  scripts: {
+      "deploy": "npm run build && scp -r ./build/* ubuntu@ec2-3-72-147-222.eu-central-1.compute.amazonaws.com:/home/ubuntu/diplom/movies-explorer-frontend/"
+  }
+```
+
+## Running
 
 You can run both use:
-
 ```
-npm run start
+npm i && npm run start
 ```
 
 ![Preview](https://github.com/ctacbarada/movies-explorer-frontend/blob/main/src/images/Screenshot%202022-09-09%20at%2022.51.59.png?raw=true)
