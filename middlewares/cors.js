@@ -1,7 +1,7 @@
 // Массив доменов, с которых разрешены кросс-доменные запросы
 const allowedCors = [
-  'https://movie-h18k.onrender.com/',
-  'http://movie-h18k.onrender.com/',
+  'https://movie-h18k.onrender.com',
+  'http://movie-h18k.onrender.com',
   'http://localhost:3000',
 ];
 
