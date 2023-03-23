@@ -2,7 +2,7 @@
 const allowedCors = [
   'https://movie-h18k.onrender.com',
   'http://movie-h18k.onrender.com',
-  // 'http://localhost:3000',
+  'http://localhost:3000',
 ];
 
 module.exports = ((req, res, next) => {
