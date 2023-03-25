@@ -1,4 +1,4 @@
-const allowedCors = ['https://chat-frontend-u3jf.onrender.com', 'http://chat-frontend-u3jf.onrender.com', 'http://localhost:3000'];
+const allowedCors = ['https://movie-h18k.onrender.com', 'http://movie-h18k.onrender.com', 'http://localhost:3000'];
 
 module.exports = (req, res, next) => {
   const { origin } = req.headers; /* Save the origin of the request to the origin variable */
