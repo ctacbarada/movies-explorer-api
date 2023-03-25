@@ -41,12 +41,12 @@ module.exports.createMovie = (req, res, next) => {
           })
           .catch((err) => {
             if (err.name === 'ValidationError') {
-              next(new ValidationError('400 - Переданы некорректные данные при создании фильма'));
+              next(new ValidationError('400 - Incorrect data passed while creating a movie'));
             }
             next(err);
           });
       } else {
-        next(new ConflictError('409 - Такой фильм уже существует'));
+        next(new ConflictError('409 - This movie already exists.'));
       }
     })
     .catch((err) => {
@@ -60,16 +60,16 @@ module.exports.deleteMovie = (req, res, next) => {
     .then(async (movie) => {
       if (movie.owner.toHexString() === req.user._id) {
         await Movie.findByIdAndRemove(req.params.movieId);
-        res.status(200).send({ message: 'Фильм удален' });
+        res.status(200).send({ message: 'Film deleted' });
       } else {
-        throw new NoPermissionError('403 — Попытка удалить чужой фильм');
+        throw new NoPermissionError('403 — Attempting to delete someone else\'s movie');
       }
     })
     .catch((err) => {
       if (err.message === 'NoValidId') {
-        next(new NoValidIdError('404 - Фильм с указанным id не найдена'));
+        next(new NoValidIdError('404 - Movie with specified id not found'));
       } else if (err.name === 'CastError') {
-        next(new CastError('404 - Передан невалидный id'));
+        next(new CastError('404 - Invalid id passed'));
       } else {
         next(err);
       }

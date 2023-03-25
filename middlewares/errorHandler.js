@@ -3,7 +3,7 @@ module.exports = (app) => {
     if (err.statusCode) {
       res.status(err.statusCode).send({ message: err.message });
     } else {
-      res.status(500).send({ message: 'На сервере произошла ошибка' });
+      res.status(500).send({ message: 'An error occurred on the server' });
     }
     next();
   });

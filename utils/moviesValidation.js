@@ -12,19 +12,19 @@ module.exports.postMovies = celebrate({
       if (validator.isURL(value)) {
         return value;
       }
-      return helpers.message('Неправильная ссылка');
+      return helpers.message('Wrong link');
     }),
     trailerLink: Joi.string().required().custom((value, helpers) => {
       if (validator.isURL(value)) {
         return value;
       }
-      return helpers.message('Неправильная ссылка');
+      return helpers.message('Wrong link');
     }),
     thumbnail: Joi.string().required().custom((value, helpers) => {
       if (validator.isURL(value)) {
         return value;
       }
-      return helpers.message('Неправильная ссылка');
+      return helpers.message('Wrong link');
     }),
     movieId: Joi.string().required(),
     nameRU: Joi.string().required(),
@@ -33,7 +33,7 @@ module.exports.postMovies = celebrate({
 });
 
 module.exports.deleteMovies = celebrate({
-  // валидируем параметры
+  // validate parameters
   params: Joi.object().keys({
     movieId: Joi.string().hex().length(24),
   }),

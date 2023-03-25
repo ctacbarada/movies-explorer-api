@@ -14,8 +14,8 @@ function findByIdAndUpdate(req, res, next) {
     req.user._id,
     { name, email },
     {
-      new: true, // обработчик then получит на вход обновлённую запись
-      runValidators: true, // данные будут валидированы перед изменением
+      new: true, /* the then handler will receive an updated record as input */
+      runValidators: true, /* data will be validated before change */
     },
   )
     .then((user) => {
@@ -23,7 +23,7 @@ function findByIdAndUpdate(req, res, next) {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ValidationError('400 —  Переданы некорректные данные при обновлении профиля'));
+        next(new ValidationError('400 —  Invalid data passed when updating profile'));
       } else {
         next(err);
       }
@@ -49,9 +49,9 @@ module.exports.signup = (req, res, next) => {
       })
       .catch((err) => {
         if (err.code === 11000) {
-          next(new ConflictError('409 - Пользователь с такой почтой уже существует'));
+          next(new ConflictError('409 - User with this email already exists'));
         } else if (err.name === 'ValidationError') {
-          next(new ValidationError('400 - Переданы некорректные данные при создании пользователя'));
+          next(new ValidationError('400 - Incorrect data passed during user creation'));
         } else {
           next(err);
         }
@@ -89,12 +89,12 @@ module.exports.patchUpdateUser = (req, res, next) => {
       } else if (user._id.toString() === req.user._id) {
         findByIdAndUpdate(req, res, next);
       } else {
-        next(new ConflictError('409 - Пользователь с такой почтой уже существует'));
+        next(new ConflictError('409 - User with this email already exists'));
       }
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new ValidationError('400 —  Переданы некорректные данные при обновлении профиля'));
+        next(new ValidationError('400 — Invalid data passed when updating profile'));
       } else {
         next(err);
       }

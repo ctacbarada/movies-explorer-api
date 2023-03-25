@@ -46,10 +46,10 @@ They monitor the text input fields and if they do not match the pattern, they wi
 ```JavaScript
 <input
   {...register("registrationEmail", {
-    required: "Введите e-mail",
+    required: "Enter e-mail",
     pattern: {
       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-      message: "Email должен быть с @",
+      message: "Email must be with @",
     },
   })}
   className="register__input"

@@ -9,7 +9,7 @@ let payload;
 const isAuthorized = (req, res, next) => {
   const auth = req.headers.authorization;
   if (!auth) {
-    throw new UnauthorizedError('Авторизуйтесь для доступа!');
+    throw new UnauthorizedError('Log in to access');
   }
 
   const token = auth.replace('Bearer ', '');
@@ -17,7 +17,7 @@ const isAuthorized = (req, res, next) => {
   try {
     payload = jwt.verify(token, NODE_ENV === 'production' ? JWT_SECRET_PROD : JWT_SECRET_DEV);
   } catch (err) {
-    throw new UnauthorizedError('Авторизуйтесь для доступа!');
+    throw new UnauthorizedError('Log in to access');
   }
 
   req.user = payload;

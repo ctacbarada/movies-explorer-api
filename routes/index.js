@@ -25,6 +25,6 @@ module.exports = (app) => {
   app.use('/', isAuthorized, movies);
 
   app.use((req, res, next) => {
-    next(new PageNotFoundError('404 - Страницы не существует'));
+    next(new PageNotFoundError('404 - Page does not exist'));
   });
 };
