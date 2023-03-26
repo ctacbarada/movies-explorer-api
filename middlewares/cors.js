@@ -1,4 +1,4 @@
-const allowedCors = ['https://movie-h18k.onrender.com', 'http://movie-h18k.onrender.com', 'http://localhost:3000'];
+const allowedCors = ['https://movie-h18k.onrender.com', 'http://movie-h18k.onrender.com', 'http://localhost:3000', 'https://angular-ul.netlify.app'];
 
 module.exports = (req, res, next) => {
   const { origin } = req.headers; /* Save the origin of the request to the origin variable */
